@@ -64,7 +64,7 @@ Next we want to connect our route table to our Public Subnet, from this page cli
 - Click on the public subnet
 - Click Save association
 
-## Step 5 (Connecting the Route to our Internet Gateway)
+### Step 5 (Connecting the Route to our Internet Gateway)
 
 From our Route Tables, click 'Edit Route'
 
@@ -76,6 +76,83 @@ We want to add another route so click 'Add Route', we want to allow all I.P.s so
 - For the Target, we want to select Internet Gateway and then select our VPC
 
 Click 'Save Changes'
+
+### Step 6 (Starting our Database Instance)
+
+First we are going to start our private subnet (which is our database instance) <br>
+
+We load up our image with our database on it which we created earlier, to do this find the image on AMI's and 'Launch instance from AMI'
+
+![Screenshot 2023-10-10 092633.png](images%2FScreenshot%202023-10-10%20092633.png)
+- Give an appropriate name
+- AMI should already be selected
+
+Fill out the rest as usual and now we want to create a new security group **under our new VPC**
+
+![Screenshot 2023-10-10 092826.png](images%2FScreenshot%202023-10-10%20092826.png)
+- Select your VPC
+- Change the subnet to the private subnet
+- We want to Disable 'Auto-assign public IP' since we don't need it
+- Create a new security group allowing only the SSH and Mongo ports
+![Screenshot 2023-10-10 093520.png](images%2FScreenshot%202023-10-10%20093520.png)
+
+Once double checking everything, click 'Launch Instance'
+
+### Step 7 (Starting our APP Instance)
+
+Now we need to start our public subnet (which is our app instance)
+
+'Launch the Instance' using your app AMI
+
+![Screenshot 2023-10-10 093912.png](images%2FScreenshot%202023-10-10%20093912.png)
+- Give an appropriate name
+- AMI should already be selected
+
+Fill out the rest as usual and now we want to create a new security group **under our new VPC**
+
+![Screenshot 2023-10-10 094144.png](images%2FScreenshot%202023-10-10%20094144.png)
+- Select your VPC
+- Change the subnet to the public subnet
+- We want to **Enable** 'Auto-assign public IP' since we want anyone to join the website
+- Create a new security group allowing only the SSH, HTTP and 3000 ports
+![Screenshot 2023-10-10 094538.png](images%2FScreenshot%202023-10-10%20094538.png)
+
+Next we want to fill in the user details so we can run the app and the database
+
+Scroll down to the 'Additional Details' tab and expand it and scroll to the user details
+
+```
+#!/bin/bash
+
+export DB_HOST=mongodb://<private-ip-for-database>/posts
+
+cd /home/ubuntu/repo/app
+npm install
+
+node seeds/seed.js
+
+sudo systemctl restartnginx
+
+pm2 start app.js
+```
+
+Copy and paste this into the user details, to find the Private IP number of the database, go to the instance details and you can see it there.
+![Screenshot 2023-10-10 095209.png](images%2FScreenshot%202023-10-10%20095209.png)
+
+Once you check everything, click 'Launch Instance'
+
+### Step 8 (Load up the website on the Web Browser)
+
+Paste in the app public i.p. address into a web browser with /posts to check if everything is running smoothly
+
+![Screenshot 2023-10-10 095518.png](images%2FScreenshot%202023-10-10%20095518.png)
+
+
+
+
+
+
+
 
 
 
