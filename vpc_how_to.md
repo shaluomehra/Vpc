@@ -1,5 +1,5 @@
 # Creating a VPC
-
+![Untitled Diagram.drawio.png](images%2FUntitled%20Diagram.drawio.png)
 ### Step 1 (Creating the Initial VPC)
 
 Navigate to the VPC page, using the search bar at the top of the AWS console and then click 'Create VPC' <br>
